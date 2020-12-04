@@ -1,0 +1,6 @@
+array_partition;get_delta_matrix_weights1;delta_weights1;1;{cyclic,block};{1->832,integer_divisors}
+array_partition;get_delta_matrix_weights1;output_difference;1;{cyclic,block};{1->64,integer_divisors}
+array_partition;get_delta_matrix_weights1;last_activations;1;{cyclic,block};{1->13,integer_divisors}
+unroll;get_delta_matrix_weights1;loop_1;{1->13,integer_divisors}
+unroll;get_delta_matrix_weights1;loop_2;{1->64,integer_divisors}
+clock;{10}

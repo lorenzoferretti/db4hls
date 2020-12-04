@@ -1,0 +1,7 @@
+resource;last_step_scan;bucket;{RAM_2P_BRAM}
+resource;last_step_scan;sum;{RAM_2P_BRAM}
+array_partition;last_step_scan;bucket;1;{cyclic,block};{1->512,pow_2}
+array_partition;last_step_scan;sum;1;{cyclic,block};{1->128,pow_2}@a
+unroll;last_step_scan;last_1;{1->128,pow_2}@a
+unroll;last_step_scan;last_2;{1,2,4,8,16}
+clock;{10}
