@@ -1,5 +1,5 @@
 # Create folder project structure
-mkdir syn_report_zip
+mkdir syn_zip
 mkdir syn
 mkdir tcl_scripts
 mkdir venv

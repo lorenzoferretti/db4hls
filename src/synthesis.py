@@ -2,6 +2,9 @@ import sys
 import VivadoHLS
 import itertools
 import sweep_parser
+import subprocess
+import multiprocessing as mp
+import hashlib
 
 
 class Synthesiser:
@@ -18,10 +21,11 @@ class Synthesiser:
         self.explorationKnobs = None
         self.synthesisDstFolder = None
         self.synthesisScriptFolder = None
+        self.synthesisZipFolder = None
         self.ID = 0
 
     def set_project(self, src_folder, src_files, test_bench_file, top_function, implementation,
-                    dst_folder, script_folder):
+                    dst_folder, script_folder, zip_folder):
         #self.projectName = project_name
         self.srcFolder = src_folder
         self.srcFiles = src_files
@@ -30,6 +34,7 @@ class Synthesiser:
         self.implementation = implementation
         self.synthesisDstFolder = dst_folder
         self.synthesisScriptFolder = script_folder
+        self.synthesisZipFolder = zip_folder
 
     def set_board_specs(self, board):
         self.board = board
@@ -261,6 +266,7 @@ class Synthesiser:
 
     def explore_configs(self, design_space, config, bindings, bind_configs, ds_exhaustive):
         depth = len(config)
+        # identifier = 0
         if depth == len(design_space):
             return
         else:
@@ -295,3 +301,119 @@ class Synthesiser:
             content = "vivado_hls -f " + self.topFunction + "_" + identifier + ".tcl\n"
             f.write(content)
             f.close()
+
+    def synthesise_batch(self, configs, csd, n_cores, max_time):
+        print("Starting batch...")
+        hash_list = []
+        id_list = []
+        discretized_configs = []
+        # Check if configuration have already been synthesised remove the one already synthesised
+        config_set = set(map(tuple, configs))
+        configs = list(map(list, config_set))
+        for conf in configs:
+            # disc_conf = self.lattice.revert_discretized_config(conf)
+            # discretized_configs.append(disc_conf)
+            hash_object = hashlib.md5((str(conf) +
+                                       str(self.topFunction)).encode())
+            hash_id = hash_object.hexdigest()
+            hash_list.append(hash_id)
+        # db = db_info["db"]
+        # db.connect_to_db()
+        # n_core = db.get_machine_core_n(db_info["machine_id"])
+        # db.close_connection()
+
+        #print(n_core)
+        # Discretize conf
+        # discretized_configs = [pool.apply(self.parallel_discretize_conf, args=(c,))
+        #                               for c in configs]
+        # Generate hashes
+        # hash_list = [pool.apply(self.parallel_generate_hashes, args=(c, db_info["ds_id"]))
+        #                               for c in discretized_configs]
+
+
+        # invoke gnu parallel to generate all the script files
+        print("Writing batch file...")
+        batch_namelist_file = open(self.synthesisScriptFolder + self.topFunction +
+                                   "_" + self.implementation + "_batch.txt", "w+")
+        # print("Adding configurations to db...")
+        # db.connect_to_db()
+        for h in hash_list:
+            batch_namelist_file.write(h+"\n")
+            # hash_id = db.add_dse_configuration(db_info["ds_id"], h)
+            # id_list.append(h)
+        # db.close_connection()
+        batch_namelist_file.close()
+
+        print("Generating HSL scritps...")
+        pool = mp.Pool(processes=int(n_cores))
+        parallel_script_generation = [pool.apply(self.generates_scripts_from_configs, args=(h, c, csd))
+                                      for h, c in zip(hash_list, configs)]
+
+        # print("Adding knobs to database...")
+        # db.connect_to_db()
+        # for result in parallel_script_generation:
+        #     #print(result)
+        #     ds_script = result[0]
+        #     id_conf = result[3]
+        #     config = result[2]
+        #     knobs = result[1]
+        #     for i in range(0,len(config)):
+        #         id_knob = db.add_knob(knobs[i][0], knobs[i][1])
+        #         db.add_knob_to_dse_configuration(id_conf, id_knob)
+        #         # TODO add JSON descriptor
+        #     db.add_directive_script_to_dse_configuration(id_conf, ds_script, config)
+        # db.close_connection()
+
+        # for result in parallel_script_generation:
+        #     # print(result)
+        #     ds_script = result[0]
+        #     id_conf = result[3]
+        #     config = result[2]
+        #     knobs = result[1]
+        #     for i in range(0, len(config)):
+        #         knob_string = knobs[i][0] + "-" + knobs[i][1]
+        #         if knob_string in self.local_knob_table.keys():
+        #             id_knob = self.local_knob_table[knob_string]
+        #         else:
+        #             # id_knob = db.add_knob(knobs[i][0], knobs[i][1])
+        #             self.local_knob_table[knob_string] = id_knob
+        #         # db.add_knob_to_dse_configuration(id_conf, id_knob)
+        #         # TODO add JSON descriptor
+        #     # db.add_directive_script_to_dse_configuration(id_conf, ds_script, config)
+        # # db.close_connection()
+        # #print(results)
+        # #processes = [mp.Process(target=self.generates_scripts_from_configs,
+        # #                        args=(id_list, discretized_configs, db_info, db, ds)) for x in range(8)]
+
+        # Run processes
+        #for p in processes:
+        #    p.start()
+        #
+        # for h, c in zip(hash_list, discretized_configs):
+        #     hash_id = db.add_dse_configuration(db_info["ds_id"], h)
+        #     id_list.append(hash_id)
+        #     VivadoHLS.create_tcl_script_with_id(self.synthesis_info, hash_id)
+        #     directive_script = VivadoHLS.create_directive_script_with_id(self.synthesis_info, ds, c, hash_id,
+        #                                                                  db, db_info)
+        #     db.add_directive_script_to_dse_configuration(hash_id, directive_script, c)
+        #
+        # db.close_connection()
+
+        print("Starting synthesis...")
+        # Invoke gnu_parallel to run synthesis
+        subprocess.call(["bash", "dse.sh", self.topFunction, self.implementation, max_time,
+                         self.s, self.synthesisScriptFolder, self.synthesisDstFolder, self.synthesisZipFolder])
+
+        return hash_list
+
+    def generates_scripts_from_configs(self, h, c, csd):
+        # for h, c in zip(id_list, discretized_configs):
+        VivadoHLS.create_tcl_script_with_id(self, h)
+        # db.close_connection()
+        directive_script, knobs_to_add_to_db = VivadoHLS.create_directive_script_with_id(self, csd, c, h)
+        # db.add_directive_script_to_dse_configuration(h, directive_script, c)
+        # db.close_connection()
+        return directive_script, knobs_to_add_to_db, c, h
+
+
+

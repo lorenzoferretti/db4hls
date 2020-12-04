@@ -9,6 +9,7 @@ NOTE: Before run this script please exhecute sh ./db4hls_confing.sh
 '''
 
 import synthesis
+import VivadoHLS
 
 ### Set all project and environmental variables
 
@@ -39,11 +40,13 @@ destination_folder_path = "../syn/"
 # Specify destination folder of the hls file generated
 hls_scripts_folder_path = "../tcl_scripts/"
 
-# Specify the configuration space descriptor file
-csd_file = "../csd_files/last_step_scan_radix_sort.sweep"
+synthesis_zip_folder = "../syn_zip/"
 
-# Specify the maximum amount of time allowed per synthesis
-max_synthesis_time = 60
+# Specify the configuration space descriptor file
+csd_file = "../csd_files/get_delta_matrix_weights1_test.sweep"
+
+# Specify the maximum amount of time allowed per synthesis in seconds (1h = 3600s)
+max_synthesis_time = 3600
 
 ### Start processing
 
@@ -52,7 +55,7 @@ synth = synthesis.Synthesiser(synthesis_tool)
 
 # Set synthesised project data and board spec
 synth.set_project(src_files_path, src_files, testbench, top_module, design,
-                  destination_folder_path, hls_scripts_folder_path)
+                  destination_folder_path, hls_scripts_folder_path, synthesis_zip_folder)
 synth.set_board_specs(technology)
 
 # Process the configuration space descriptor
@@ -63,6 +66,9 @@ print(knob_value_sets)
 
 # Generate configurations from configuration space descriptor
 configs = synth.exhaustive_configs()
-print(configs)
+for c in configs:
+    print(c)
 
-VivadoHLS.create_directive_script(configs)
+synth.synthesise_batch(configs, configuration_space_descriptor, 2)
+
+# VivadoHLS.create_directive_script(synth, configuration_space_descriptor, configs)

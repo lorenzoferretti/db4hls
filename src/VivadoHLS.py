@@ -3,7 +3,7 @@ import sys
 hls_knobs = ['clock', 'array_partition', 'resource', 'pipeline', 'unroll', 'bundling', 'inline']
 
 
-def create_directive_script_with_id(synthesis_info, ds_object, config, identifier, db, db_info):
+def create_directive_script_with_id(synthesis_info, ds_object, config, identifier):
     script = ""
     # directive_file = open(
     #     synthesis_info.synthesisDstFolder + synthesis_info.topFunction + "_" + str(identifier) + ".dir", "w+")
@@ -16,16 +16,14 @@ def create_directive_script_with_id(synthesis_info, ds_object, config, identifie
     #print(config)
     add_to_db = []
     for k, c, kv, kt in zip(knobs, config, knobs_values, knobs_type):
-        pragma_str, knob_to_add_to_db = generate_pragma(knob=k, config=c, knob_value=kv, knob_type=kt,
-                                                        db=db, id_conf=identifier)
+        pragma_str, knob_to_add_to_db = generate_pragma(knob=k, config=c, knob_value=kv, knob_type=kt)
         script += pragma_str
         add_to_db.append(knob_to_add_to_db)
 
     if len(config) < len(knobs_values):
         for k, kv, kt in zip(knobs, knobs_values, knobs_type):
             if len(kv) == 1:
-                pragma_str, knob_to_add_to_db = generate_pragma(knob=k, config=None, knob_value=kv, knob_type=kt,
-                                                                db=db, id_conf=identifier)
+                pragma_str, knob_to_add_to_db = generate_pragma(knob=k, config=None, knob_value=kv, knob_type=kt)
                 script += pragma_str
                 add_to_db.append(knob_to_add_to_db)
 
@@ -36,7 +34,7 @@ def create_directive_script_with_id(synthesis_info, ds_object, config, identifie
 
 def create_directive_script(synthesis_info, ds_object, config):
     script = ""
-    directive_file = open(synthesis_info.topFunction + ".dir", "w+")
+    directive_file = open(synthesis_info.synthesisScriptFolder + synthesis_info.topFunction + ".dir", "w+")
 
     knobs_values = ds_object["Knobs_values"]
     knobs_type = ds_object["Knobs_type"]
@@ -53,7 +51,8 @@ def create_directive_script(synthesis_info, ds_object, config):
     directive_file.close()
 
 
-def generate_pragma(knob, config, knob_value, knob_type, db, id_conf):
+# def generate_pragma(knob, config, knob_value, knob_type, db, id_conf):
+def generate_pragma(knob, config, knob_value, knob_type):
     knob_to_add_to_db = None
     # TODO ADD LOCATION TO KNOB
     if knob_type == "resource":
