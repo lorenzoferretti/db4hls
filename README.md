@@ -19,7 +19,7 @@ After having installed mysql on your machine, import the [DB4HLS](www.inf.usi.ch
 ```
 mysql -u <your_username> -p<your_password> db4hls < db4hls.sql
 ```
-Now you can access DB4HLS and query it in order to access its data. The folder `sql_scripts` includes different examples of queries that can be performed to read data from it. Please refer to the [tutorial](inf.usi.ch/phd/ferretti/db4hls/tutorial.html) for more details regarding the SQL scripts and to the [DB4HLS documentation](inf.usi.ch/phd/ferretti/db4hls/docs.html) for more info about the database structure.
+Now you can access DB4HLS and query it in order to access its data. Please refer to the [tutorial](inf.usi.ch/phd/ferretti/db4hls/tutorial.html) for more details regarding the SQL scripts and to the [DB4HLS documentation](inf.usi.ch/phd/ferretti/db4hls/docs.html) for more info about the database structure.
 
 An sql script can be executed running the follwing instruction:
 ```sql
