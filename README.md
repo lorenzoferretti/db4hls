@@ -1,6 +1,6 @@
 # DB4HLS
 
-Herein you can find the sources and the instruction to perform parallel DSEs using a [DSL](inf.usi.ch/phd/ferretti/db4hls/dsl.html) tought for efficient definition of large design spaces, and to concurrenly exhecute the synthesis with VivadoHLS using using [gnu-parallel](https://www.gnu.org/software/parallel/).
+Herein you can find the sources and the instruction to perform parallel DSEs using a [DSL](www.inf.usi.ch/phd/ferretti/db4hls/dsl.html) tought for efficient definition of large design spaces, and to concurrenly exhecute the synthesis with VivadoHLS using using [gnu-parallel](https://www.gnu.org/software/parallel/).
 Morover, SQL scripts to interact with the DB4HLS database are provided in order to retreive data from it.
 
 ### DB prerequisites:
