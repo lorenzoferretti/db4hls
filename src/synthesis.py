@@ -333,7 +333,7 @@ class Synthesiser:
 
         # invoke gnu parallel to generate all the script files
         print("Writing batch file...")
-        batch_namelist_file = open(self.synthesisScriptFolder + self.topFunction +
+        batch_namelist_file = open(self.synthesisDstFolder + self.topFunction +
                                    "_" + self.implementation + "_batch.txt", "w+")
         # print("Adding configurations to db...")
         # db.connect_to_db()
@@ -401,8 +401,8 @@ class Synthesiser:
 
         print("Starting synthesis...")
         # Invoke gnu_parallel to run synthesis
-        subprocess.call(["bash", "dse.sh", self.topFunction, self.implementation, max_time,
-                         self.s, self.synthesisScriptFolder, self.synthesisDstFolder, self.synthesisZipFolder])
+        subprocess.call(["bash", "dse.sh", self.topFunction, self.implementation, str(max_time),
+                         self.synthesisDstFolder, self.synthesisScriptFolder, self.synthesisZipFolder])
 
         return hash_list
 

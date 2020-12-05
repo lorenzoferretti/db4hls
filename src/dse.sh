@@ -29,7 +29,7 @@ SYNTHESIS_REPORT_ZIP_FOLDER=$6
 # ==============================================================================
 
 # Max execution time.
-TIMEOUT_TIME=MAX_TIME
+TIMEOUT_TIME=$MAX_TIME
 
 # Run at most THREADS - 2 instances of Vivado HLS / Vivado.
 MAX_THREADS=$(lscpu | grep -E '^CPU\(' | awk '{print $2}')
@@ -51,7 +51,7 @@ RUN_CLEAN=1
 # ==============================================================================
 
 # GNU Parallel log of jobs.
-JOB_LOG=./dse_$TOP_MODULE\_$ARCH.jobs.log
+JOB_LOG=$SYN_DIR/dse_$TOP_MODULE\_$ARCH.jobs.log
 
 # ==============================================================================
 #
@@ -119,8 +119,9 @@ print_info ()
 #
 get_candidate_uarchs ()
 {
+    #echo "get_candidate_uarchs SONO QUI"
     #for i in $USER_DEFINED_UARCHS; do echo $i; done
-    cat "${SCRIPT_DIR}/${TOP_MODULE}_${ARCH}_batch.txt"
+    cat "${SYN_DIR}/${TOP_MODULE}_${ARCH}_batch.txt"
 }
 
 #
@@ -129,10 +130,10 @@ get_candidate_uarchs ()
 run_parallel4hls_vivado ()
 {
     echo "===> $1"
+    local_path=$(pwd)
     uarch=$1
-    cd $SYN_DIR
-
-    timeout -k 2 $TIMEOUT_TIME vivado_hls -f ../hls_scripts/${uarch}.tcl -l vivado_hls_$uarch.log &> /dev/null
+    cd $local_path/$SYN_DIR
+    timeout -k 2 $TIMEOUT_TIME vivado_hls -f $local_path/$SCRIPT_DIR${uarch}.tcl -l vivado_hls_$uarch.log &> /dev/null
     VIVADO_HLS_STATUS=$?
 
     PROJECT_DIR=${TOP_MODULE}-${ARCH}-${uarch}
@@ -142,29 +143,22 @@ run_parallel4hls_vivado ()
     VIVADO_HLS_LOG="vivado_hls_$uarch.log"
     VIVADO_REPORT_XML="$PROJECT_DIR/$SOLUTION/impl/report/verilog/myproject_export.xml"
     VIVADO_LOG="$PROJECT_DIR/$SOLUTION/impl/verilog/autoimpl.log"
+    TCL_SCRIPT="$local_path/$SCRIPT_DIR${uarch}.tcl"
+    DIR_SCRIPT="$local_path/$SCRIPT_DIR${uarch}.dir"
 
-    #cd ..    
-    #echo $SRC_DIR
-    cd $SRC_DIR
-    #echo "FOLDER SUPPOSED TO CONTAIN PYTHON SCRIPT"
-    #pwd
     echo "HERE RESULTS CAN BE COLLECTED AND WRITTEN IN THE DB"
 #     python ./collect_results.py $VIVADO_HLS_REPORT_XML $VIVADO_HLS_LOG $VIVADO_HLS_STATUS $VIVADO_REPORT_XML $VIVADO_LOG $VIVADO_STATUS $TIMEOUT_TIME $PROJECT_DIR.tar.bz2 $SYN_DIR $PROJECT_DIR
 
-#Collect results here
-#Collect results here
-    #echo $SYN_DIR
     cd $SYN_DIR
-    #echo "FOLDER SUPPOSED TO CONTAIN SYNTHESIS RESULTS"
-    #pwd
-    echo $(ls $VIVADO_HLS_REPORT_XML $VIVADO_HLS_LOG $VIVADO_REPORT_XML $VIVADO_LOG 2>/dev/null)
-    tar cfj $PROJECT_DIR.tar.bz2 $(ls $VIVADO_HLS_REPORT_XML_FILES $VIVADO_HLS_LOG $VIVADO_REPORT_XML $VIVADO_LOG 2>/dev/null) &> /dev/null
+    echo $(ls $VIVADO_HLS_REPORT_XML $VIVADO_HLS_LOG $VIVADO_REPORT_XML $VIVADO_LOG $TCL_SCRIPT $DIR_SCRIPT 2>/dev/null)
+    tar cfj $PROJECT_DIR.tar.bz2 $(ls $VIVADO_HLS_REPORT_XML_FILES $VIVADO_HLS_LOG $VIVADO_REPORT_XML $VIVADO_LOG $TCL_SCRIPT $DIR_SCRIPT 2>/dev/null) &> /dev/null
     mv $PROJECT_DIR.tar.bz2 $SYNTHESIS_REPORT_ZIP_FOLDER/$PROJECT_DIR.tar.bz2
 #Remove files generated for the synthesis    
     rm -rf $PROJECT_DIR
     rm -f $VIVADO_HLS_LOG
-    rm -f ../hls_scripts/${uarch}.tcl
-    rm -f ../hls_scripts/${uarch}.dir
+    rm -f $local_path/$SCRIPT_DIR${uarch}.tcl
+    rm -f $local_path/$SCRIPT_DIR${uarch}.dir
+    echo
 }
 
 
@@ -187,6 +181,7 @@ export SYNTHESIS_REPORT_ZIP_FOLDER
 
 # Print some info, run the stress tests with GNU parallel, and eventually collect the results.
 print_info
+echo "BEFORE PARALLEL CALL"
 get_candidate_uarchs | parallel --progress --will-cite --jobs $THREADS $SWAP --joblog $JOB_LOG run_parallel4hls_vivado
 #get_candidate_uarchs | parallel --progress --will-cite --timeout $TIMEOUT_TIME --jobs $THREADS $SWAP --joblog $JOB_LOG run_hls4ml_vivado
 #collect_results

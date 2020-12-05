@@ -1,4 +1,7 @@
 venv/
 syn/
-syn_report_zip/
+syn_zip/
 tcl_scripts/
+*.pyc
+*.log
+

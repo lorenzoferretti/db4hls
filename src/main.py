@@ -69,6 +69,6 @@ configs = synth.exhaustive_configs()
 for c in configs:
     print(c)
 
-synth.synthesise_batch(configs, configuration_space_descriptor, 2)
+synth.synthesise_batch(configs, configuration_space_descriptor, 6, max_synthesis_time)
 
 # VivadoHLS.create_directive_script(synth, configuration_space_descriptor, configs)
