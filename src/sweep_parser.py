@@ -201,20 +201,10 @@ def process_array_partition(descriptors):
         tag = desc[1]
         dimension = desc[2]
         partitioning_type = desc[3]
-# <<<<<<< HEAD
-#         values = desc[4]
-#         knob_partitioning_types, binding_partitioning_type = parse_knob_literal_values(partitioning_type)
-#         knob_partitioning_values, binding_partitioning_values = parse_knob_digit_values(values)
-#         array_partition_obj = VivadoHLS.Partition(tag, target_function, dimension)
-# =======
-        #print(len(partitioning_type))
-        #print(partitioning_type)
         if len(partitioning_type) == 10 and "complete" in partitioning_type:
             knob_values = ['complete']
             binding = [(None, '0')]
-            #knob_partitioning_types, binding_partitioning_type = parse_knob_literal_values(partitioning_type)
             array_partition_obj = VivadoHLS.Partition(tag, target_function, dimension)
-            #print((array_partition_obj, knob_values, binding))
             array_partition.append((array_partition_obj, knob_values, binding))
             continue
         else:
@@ -223,11 +213,6 @@ def process_array_partition(descriptors):
             knob_partitioning_values, binding_partitioning_values = parse_knob_digit_values(values)
             array_partition_obj = VivadoHLS.Partition(tag, target_function, dimension)
 
-        #knob_partitioning_types, binding_partitioning_type = parse_knob_literal_values(partitioning_type)
-        #knob_partitioning_values, binding_partitioning_values = parse_knob_digit_values(values)
-        #array_partition_obj = VivadoHLS.Partition(tag, target_function, dimension)
-# >>>>>>> 557a0c430107a2c97d340d4714c90ca67bacfa9a
-
         if "complete" in partitioning_type:
             partitioning_type.remove("complete")
             knob_values = [item for item in itertools.product(knob_partitioning_types, knob_partitioning_values)]
@@ -235,10 +220,8 @@ def process_array_partition(descriptors):
             knob_values.append("complete")
         else:
             knob_values = [item for item in itertools.product(knob_partitioning_types, knob_partitioning_values)]
-            # binding = [(binding_partitioning_values, i % len(knob_partitioning_values)) for i in range(len(knob_values))]
             binding = [(binding_partitioning_values, i) for i in range(len(knob_values))]
             array_partition.append((array_partition_obj, knob_values, binding))
-        #print((array_partition_obj, knob_values, binding))
     return array_partition
 
 
@@ -295,8 +278,6 @@ def create_ds(sweep_file):
     for k in range(len(dictionary_keys)):
         key = dictionary_keys[k]
         values = ds.get(key)
-        #for i in range(len(values)):
-        #    design_space_knob_type.append(key)
 
         if key == "resource":
             knobs = process_resource(values)

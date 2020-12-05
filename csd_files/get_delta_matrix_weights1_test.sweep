@@ -1,6 +1,6 @@
-array_partition;get_delta_matrix_weights1;delta_weights1;1;{cyclic,block};{1->2,integer_divisors}
-array_partition;get_delta_matrix_weights1;output_difference;1;{cyclic};{1->2,integer_divisors}
+array_partition;get_delta_matrix_weights1;delta_weights1;1;{cyclic,block};{1->2,integer_divisors}@a
+array_partition;get_delta_matrix_weights1;output_difference;1;{cyclic};{1->2,integer_divisors}@a
 array_partition;get_delta_matrix_weights1;last_activations;1;{cyclic};{2}
-unroll;get_delta_matrix_weights1;loop_1;{1}
-unroll;get_delta_matrix_weights1;loop_2;{1}
+unroll;get_delta_matrix_weights1;loop_1;{1,2}@b
+unroll;get_delta_matrix_weights1;loop_2;{1,2}@b
 clock;{10}

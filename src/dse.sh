@@ -21,9 +21,6 @@ SCRIPT_DIR=$5
 
 SYNTHESIS_REPORT_ZIP_FOLDER=$6
 
-# Result directory
-# RESULT_DIR=$6
-
 # ==============================================================================
 # Host constraints
 # ==============================================================================
@@ -119,8 +116,6 @@ print_info ()
 #
 get_candidate_uarchs ()
 {
-    #echo "get_candidate_uarchs SONO QUI"
-    #for i in $USER_DEFINED_UARCHS; do echo $i; done
     cat "${SYN_DIR}/${TOP_MODULE}_${ARCH}_batch.txt"
 }
 
@@ -146,8 +141,7 @@ run_parallel4hls_vivado ()
     TCL_SCRIPT="$local_path/$SCRIPT_DIR${uarch}.tcl"
     DIR_SCRIPT="$local_path/$SCRIPT_DIR${uarch}.dir"
 
-    echo "HERE RESULTS CAN BE COLLECTED AND WRITTEN IN THE DB"
-#     python ./collect_results.py $VIVADO_HLS_REPORT_XML $VIVADO_HLS_LOG $VIVADO_HLS_STATUS $VIVADO_REPORT_XML $VIVADO_LOG $VIVADO_STATUS $TIMEOUT_TIME $PROJECT_DIR.tar.bz2 $SYN_DIR $PROJECT_DIR
+    #echo "HERE RESULTS CAN BE COLLECTED AND WRITTEN IN THE DB"
 
     cd $SYN_DIR
     echo $(ls $VIVADO_HLS_REPORT_XML $VIVADO_HLS_LOG $VIVADO_REPORT_XML $VIVADO_LOG $TCL_SCRIPT $DIR_SCRIPT 2>/dev/null)
@@ -183,5 +177,4 @@ export SYNTHESIS_REPORT_ZIP_FOLDER
 print_info
 echo "BEFORE PARALLEL CALL"
 get_candidate_uarchs | parallel --progress --will-cite --jobs $THREADS $SWAP --joblog $JOB_LOG run_parallel4hls_vivado
-#get_candidate_uarchs | parallel --progress --will-cite --timeout $TIMEOUT_TIME --jobs $THREADS $SWAP --joblog $JOB_LOG run_hls4ml_vivado
 #collect_results

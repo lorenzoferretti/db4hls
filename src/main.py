@@ -34,12 +34,13 @@ design = "backprop"
 # Specify top_module (name of the function to be synthesised)
 top_module = "get_delta_matrix_weights1"
 
-# Specify destination folder of the synthesis
+# Specify destination folder of the synthesis while executed
 destination_folder_path = "../syn/"
 
 # Specify destination folder of the hls file generated
 hls_scripts_folder_path = "../tcl_scripts/"
 
+# Specify destination folder that will contained the compressed outcome of the syntehsis
 synthesis_zip_folder = "../syn_zip/"
 
 # Specify the configuration space descriptor file
@@ -47,6 +48,9 @@ csd_file = "../csd_files/get_delta_matrix_weights1_test.sweep"
 
 # Specify the maximum amount of time allowed per synthesis in seconds (1h = 3600s)
 max_synthesis_time = 3600
+
+# Specify the maximum number of cores to use duiring the exploration. (Leave at least one or two cores available)
+number_of_cores = 6
 
 ### Start processing
 
@@ -69,6 +73,5 @@ configs = synth.exhaustive_configs()
 for c in configs:
     print(c)
 
-synth.synthesise_batch(configs, configuration_space_descriptor, 6, max_synthesis_time)
+synth.synthesise_batch(configs, configuration_space_descriptor, number_of_cores, max_synthesis_time)
 
-# VivadoHLS.create_directive_script(synth, configuration_space_descriptor, configs)
