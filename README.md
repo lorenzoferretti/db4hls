@@ -16,10 +16,15 @@ Moreover, SQL scripts to interact with the [DB4HLS](www.inf.usi.ch/phd/ferretti/
 
 After having installed mysql on your machine, import the [DB4HLS](www.inf.usi.ch/phd/ferretti/db4hls.html) schema available from the [follwing link](www.inf.usi.ch/phd/ferretti/db4hls.html) into your mysql database.
 
+Firstly, run mysql and create an empty `db4hls` database:
+```
+CREATE DATABASE db4hls;
+```
+Then, close mysql and import the `db4hls.sql` content in your database.
 ```
 mysql -u <your_username> -p<your_password> db4hls < db4hls.sql
 ```
-Now you can access DB4HLS and query it in order to access its data. Please refer to the [tutorial](inf.usi.ch/phd/ferretti/db4hls/tutorial.html) for more details regarding the SQL scripts and to the [DB4HLS documentation](inf.usi.ch/phd/ferretti/db4hls/docs.html) for more info about the database structure.
+Now, by running `msql` you can access the content of DB4HLS and query it in order to access its data. Please refer to the [tutorial](inf.usi.ch/phd/ferretti/db4hls/tutorial.html) for more details regarding the SQL scripts and to the [DB4HLS documentation](inf.usi.ch/phd/ferretti/db4hls/docs.html) for more info about the database structure.
 
 An sql script can be executed running the follwing instruction:
 ```sql
