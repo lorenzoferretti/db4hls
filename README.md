@@ -69,7 +69,7 @@ Activate the virtual environment created with the following instruction:
 source venv/bin/activate
 ```
 Source the VivadoHLS script `settings64.sh` in order to run VivadoHLS from the DB4HLS folder.
-Example of p
+Example:
 ```bash
 source <path_of_your_vivado_version>/settings64.sh
 ```
