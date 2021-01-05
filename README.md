@@ -1,7 +1,7 @@
 # DB4HLS
 
 Herein you can find the sources and the instruction to perform parallel DSEs using a [DSL](www.inf.usi.ch/phd/ferretti/db4hls/dsl.html) thought for an efficient definition of large design spaces, and to concurrently execute the synthesis with VivadoHLS using [gnu-parallel](https://www.gnu.org/software/parallel/).
-Moreover, SQL scripts to interact with the [DB4HLS](www.inf.usi.ch/phd/ferretti/db4hls.html) database are provided in order to retrieve data from it.
+Moreover, SQL scripts to interact with the [DB4HLS](https://www.db4hls.inf.usi.ch/) database are provided in order to retrieve data from it.
 
 ### DB prerequisites:
 
@@ -14,7 +14,7 @@ Moreover, SQL scripts to interact with the [DB4HLS](www.inf.usi.ch/phd/ferretti/
 
 ## How to use DB4HLS
 
-After having installed mysql on your machine, import the [DB4HLS](www.inf.usi.ch/phd/ferretti/db4hls.html) schema available from the [follwing link](www.inf.usi.ch/phd/ferretti/db4hls.html) into your mysql database.
+After having installed mysql on your machine, import the [DB4HLS](https://www.db4hls.inf.usi.ch/db4hls.sql) schema available from the [follwing link](https://www.db4hls.inf.usi.ch/) into your mysql database.
 
 Firstly, run mysql and create an empty `db4hls` database:
 ```
