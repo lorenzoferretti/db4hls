@@ -1,7 +1,7 @@
 # DB4HLS
 
-Herein you can find the sources and the instruction to perform parallel DSEs using a [DSL](www.inf.usi.ch/phd/ferretti/db4hls/dsl.html) thought for an efficient definition of large design spaces, and to concurrently execute the synthesis with VivadoHLS using [gnu-parallel](https://www.gnu.org/software/parallel/).
-Moreover, SQL scripts to interact with the [DB4HLS](https://www.db4hls.inf.usi.ch/) database are provided in order to retrieve data from it.
+Herein you can find the sources and the instruction to perform parallel DSEs using a [DSL](https://www.inf.usi.ch/phd/ferretti/db4hls/dsl.html) thought for an efficient definition of large design spaces, and to concurrently execute the synthesis with VivadoHLS using [gnu-parallel](https://www.gnu.org/software/parallel/).
+Moreover, SQL scripts to interact with the [DB4HLS](https://www.db4hls.inf.usi.ch/db4hls.sql) database are provided in order to retrieve data from it.
 
 ### DB prerequisites:
 
@@ -24,7 +24,7 @@ Then, close mysql and import the `db4hls.sql` content in your database.
 ```
 mysql -u <your_username> -p<your_password> db4hls < db4hls.sql
 ```
-Now, by running `msql` you can access the content of DB4HLS and query it in order to access its data. Please refer to the [tutorial](inf.usi.ch/phd/ferretti/db4hls/tutorial.html) for more details regarding the SQL scripts and to the [DB4HLS documentation](inf.usi.ch/phd/ferretti/db4hls/docs.html) for more info about the database structure.
+Now, by running `msql` you can access the content of DB4HLS and query it in order to access its data. Please refer to the [tutorial](https://www.inf.usi.ch/phd/ferretti/db4hls/tutorial.html) for more details regarding the SQL scripts and to the [DB4HLS documentation](https://www.inf.usi.ch/phd/ferretti/db4hls/docs.html) for more info about the database structure.
 
 An sql script can be executed running the follwing instruction:
 ```sql
